@@ -12,7 +12,7 @@ Esta iniciativa se engloba dentro del proyecto [Pensamiento Computacional y Cien
 
 ## El equipo
 
-El equipo se llama **Matraka** y está compuesto por 3 personas: 1 alumna y 2 alumnos de primer curso del CFGS de **Desarrollo de Aplicaciones Web**.
+El equipo se llama **Matraka** y está compuesto por **Carla, Daniele y Aarón** de primer curso del CFGS de **Desarrollo de Aplicaciones Web**.
 
 ![Matraca](images/matraca.png)
 
@@ -83,4 +83,33 @@ Aceleración (G):
 ```python
 sense.set_imu_config(compass_enabled=False, gyro_enabled=False, accel_enabled=True)
 sense.get_accelerometer_raw()
+```
+
+## Puesta en marcha
+
+Desde una máquina **Linux** lleva a cabo los siguientes comandos:
+
+**⚠️ EJECUTA LOS COMANDOS UNO POR UNO COMPROBANDO QUE NO HAYA ERRORES**
+
+```bash
+sudo apt-get install -y git curl
+mkdir -p ~/bin
+curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin
+echo export PATH="$PATH:$HOME/bin" >> ~/.bashrc
+source ~/.bashrc
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.local/bin/env
+cd
+git clone git@github.com:iespuertodelacruz/astropi-matraka.git
+cd astropi-matraka
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
+cd src
+```
+
+Ahora podrás probar el fichero base ejecutando el siguiente comando:
+
+```console
+python main.py
 ```
