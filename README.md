@@ -85,6 +85,20 @@ sense.set_imu_config(compass_enabled=False, gyro_enabled=False, accel_enabled=Tr
 sense.get_accelerometer_raw()
 ```
 
+## Posición de la ISS
+
+Se proporciona una función que devuelve el posicionamiento de la ISS:
+
+```python
+position = get_ISS_position()
+```
+
+El diccionario devuelto tiene las siguientes claves:
+
+- `latitude` (º)
+- `longitude` (º)
+- `altitude` (km)
+
 ## Puesta en marcha
 
 Desde una máquina **Linux** lleva a cabo los siguientes comandos:
@@ -101,7 +115,7 @@ source ~/.bashrc
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.local/bin/env
 cd
-git clone git@github.com:iespuertodelacruz/astropi-matraka.git
+git clone git@github.com:iespuertodelacruz/astropi-matraka.git  # Debes estar autenticado!
 cd astropi-matraka/src
 ```
 
