@@ -35,7 +35,7 @@ El equipo se llama **Matraka** y está compuesto por **Carla, Daniele y Aarón**
 - [skyfield](https://rhodesmill.org/skyfield/)
 - [orbit](https://github.com/0Pyonier1/G-_in_Space_Astro_Pi/issues/1)
 
-⭐ El paquete `orbit` está incluido en el sistema operativo **Flight OS** incluido en la RPi de la ISS.
+⭐ El paquete `orbit` está incluido en el sistema operativo **Flight OS** de la RPi que se encuentra en la ISS.
 
 ## Sense HAT
 
@@ -101,15 +101,11 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.local/bin/env
 cd
 git clone git@github.com:iespuertodelacruz/astropi-matraka.git
-cd astropi-matraka
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
-cd src
+cd astropi-matraka/src
 ```
 
 Ahora podrás probar el fichero base ejecutando el siguiente comando:
 
 ```console
-python main.py
+uv run main.py
 ```
