@@ -21,7 +21,9 @@ Members:
 
 DEBUG = True
 
-
+# ==============================================================================
+# IMPORTS
+# ==============================================================================
 if DEBUG:
     from fake_sensors import SenseHat, get_ISS_position
 else:
@@ -29,6 +31,9 @@ else:
 
     from .utils import get_ISS_position
 
+# ==============================================================================
+# CODE
+# ==============================================================================
 sense = SenseHat()
 position = get_ISS_position()
 print(position)
