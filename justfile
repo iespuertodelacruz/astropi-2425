@@ -1,2 +1,2 @@
-hello:
-    echo "Hello, world!"
+run:
+    uv run main.py

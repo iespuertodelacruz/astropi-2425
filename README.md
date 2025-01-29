@@ -96,6 +96,7 @@ sudo apt-get install -y git curl
 mkdir -p ~/bin
 curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin
 echo export PATH="$PATH:$HOME/bin" >> ~/.bashrc
+echo alias j=just >> ~/.bashrc
 source ~/.bashrc
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.local/bin/env
@@ -108,4 +109,10 @@ Ahora podrás probar el fichero base ejecutando el siguiente comando:
 
 ```console
 uv run main.py
+```
+
+También puedes ejecutarlo simplemente con:
+
+```console
+j
 ```
