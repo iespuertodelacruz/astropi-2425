@@ -1,16 +1,12 @@
 import random
 
-from faker import Faker
-
-fake = Faker()
-
 
 def get_ISS_position() -> dict:
     """
     Returns the ISS latitude and longitude (degrees) and altitude (km).
     """
-    lat = float(fake.latitude())
-    lon = float(fake.longitude())
+    lat = random.uniform(-90, 90)
+    lon = random.uniform(-180, 180)
     alt = random.uniform(400, 420)
 
     return {'latitude': lat, 'longitude': lon, 'altitude': alt}

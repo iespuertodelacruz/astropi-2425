@@ -1,6 +1,5 @@
 # /// script
 # dependencies = [
-#   "faker",
 # ]
 # ///
 
