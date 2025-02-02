@@ -114,13 +114,11 @@ Desde una máquina **Linux** lleva a cabo los siguientes comandos:
 
 ```bash
 sudo apt-get install -y git curl
-mkdir -p ~/bin
-curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/bin
-echo export PATH="$PATH:$HOME/bin" >> ~/.bashrc
+curl -LsSf https://astral.sh/uv/install.sh | sh
+curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to ~/.local/bin
+echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.bashrc
 echo alias j=just >> ~/.bashrc
 source ~/.bashrc
-curl -LsSf https://astral.sh/uv/install.sh | sh
-source ~/.local/bin/env
 ```
 
 Para **clonar el repositorio** debes haberte autenticado previamente en la máquina que estés usando con tu cuenta de GitHub:
