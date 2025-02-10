@@ -46,11 +46,9 @@ with open('iss.csv', 'w') as f:
     f.write('timestamp,latitude,longitude,altitude,temperature,humidity,pressure,magnetic_x,magnetic_y,magnetic_z,acceleration_x,acceleration_y,acceleration_z,rotation_x,rotation_y,rotation_z\n')
     
     while True:
-        position = get_ISS_position()
         temperature = sense.get_temperature()
         humidity = sense.get_humidity()
         pressure = sense.get_pressure()
-        magnetic = sense.get_compass_raw()
         acceleration = sense.get_accelerometer_raw()
         rotation = sense.get_gyroscope_raw()
         timestamp = datetime.now().isoformat()
