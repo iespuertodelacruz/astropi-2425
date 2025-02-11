@@ -35,23 +35,22 @@ else:
 # CODE
 # ==============================================================================
 sense = SenseHat()
-position = get_ISS_position()
-print(position)
-
 sense.set_imu_config(compass_enabled=True, gyro_enabled=False, accel_enabled=False)
-magnetic = sense.get_compass_raw()
-print(magnetic)
-    
+HEADER = ['timestamp', 'latitude', 'longitude', 'altitude', 'temperature', 'humidity', 'pressure', 'magnetic_x', 'magnetic_y', 'magnetic_z', 'acceleration_x', 'acceleration_y', 'acceleration_z', 'rotation_x', 'rotation_y', 'rotation_z']
+
 with open('iss.csv', 'w') as f:
-    f.write('timestamp,latitude,longitude,altitude,temperature,humidity,pressure,magnetic_x,magnetic_y,magnetic_z,acceleration_x,acceleration_y,acceleration_z,rotation_x,rotation_y,rotation_z\n')
+    f.write(f'{",".join(HEADER)}\n')
     
     while True:
-        temperature = sense.get_temperature()
-        humidity = sense.get_humidity()
-        pressure = sense.get_pressure()
-        acceleration = sense.get_accelerometer_raw()
-        rotation = sense.get_gyroscope_raw()
         timestamp = datetime.now().isoformat()
-        f.write(f'{timestamp},{position["latitude"]},{position["longitude"]},{position["altitude"]},{temperature},{humidity},{pressure},{magnetic["x"]},{magnetic["y"]},{magnetic["z"]},{acceleration["x"]},{acceleration["y"]},{acceleration["z"]},{rotation["x"]},{rotation["y"]},{rotation["z"]}\n')
-
+        latitude, longitude, altitude = get_ISS_position().values()
+        acceleration_x, acceleration_y, acceleration_z = sense.get_accelerometer_raw().values()
+        magnetic_x, magnetic_y, magnetic_z = sense.get_compass_raw().values()
+        rotation_x, rotation_y, rotation_z = sense.get_gyroscope_raw().values()
+        temperature = sense.get_temperature()
+        pressure = sense.get_pressure()
+        humidity = sense.get_humidity()
+        position = get_ISS_position()
+        
+        f.write(f'{timestamp},{latitude},{longitude},{altitude},{temperature},{humidity},{pressure},{magnetic_x},{magnetic_y},{magnetic_z},{acceleration_x},{acceleration_y},{acceleration_z},{rotation_x},{rotation_y},{rotation_z}\n')
         time.sleep(5)
