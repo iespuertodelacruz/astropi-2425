@@ -44,29 +44,42 @@ sense = SenseHat()
 initial_time = monotonic_ns()
 duration = HOURS_RUNNIG * HOUR2MIN * MIN2SEC * SEC2NANOSEC
 
-# HEADER
-HEADER = [
-    'date_time_utc',
-    'latitude',
-    'longitude',
-    'altitude',
-    'temperature',
-    'humidity',
-    'pressure',
-    'magnetic_field_x',
-    'magnetic_field_y',
-    'magnetic_field_z',
-    'acceleration_x',
-    'acceleration_y',
-    'acceleration_z',
-    'rotation_x',
-    'rotation_y',
-    'rotation_z',
-]
+
+# HEADER AND MEASURES VARIABLES
+def format_data_fields(*, format: bool) -> str:
+    """
+    Choose True or False to select the format (header or variables).
+
+    :param format: True (variable format) / False (header format).
+    :type format: bool
+
+    :return: text separated by commas or variables
+    :rtype: str
+    """
+
+    measures = [
+        f'{time}' if format else 'date_time_utc',
+        f'{longitude}' if format else 'longitude',
+        f'{altitude}' if format else 'altitude',
+        f'{temperature}' if format else 'temperature',
+        f'{humidity}' if format else 'humidity',
+        f'{pressure}' if format else 'pressure',
+        f'{mx}' if format else 'magnetic_field_x',
+        f'{my}' if format else 'magnetic_field_y',
+        f'{mz}' if format else 'magnetic_field_z',
+        f'{ax}' if format else 'acceleration_x',
+        f'{ay}' if format else 'acceleration_y',
+        f'{az}' if format else 'acceleration_z',
+        f'{rx}' if format else 'rotation_x',
+        f'{ry}' if format else 'rotation_y',
+        f'{rz}' if format else 'rotation_z',
+    ]
+    return f'{",".join(measures)}\n'
+
 
 # FILE CODE
 with open(OUT_PATH, 'w') as f:
-    f.write(f'{",".join(HEADER)}\n')
+    f.write(f'{format_data_fields(format=False)}')
 
     while (monotonic_ns() - initial_time) < (duration - SEC2NANOSEC):
         # VARIABLES
@@ -98,25 +111,5 @@ with open(OUT_PATH, 'w') as f:
         ry = rotation['y']
         rz = rotation['z']
 
-        # MEASURES
-        measures = [
-            f'{time}',
-            f'{latitude}',
-            f'{longitude}',
-            f'{altitude}',
-            f'{temperature}',
-            f'{humidity}',
-            f'{pressure}',
-            f'{mx}',
-            f'{my}',
-            f'{mz}',
-            f'{ax}',
-            f'{ay}',
-            f'{az}',
-            f'{rx}',
-            f'{ry}',
-            f'{rz}',
-        ]
-
-        f.write(f'{",".join(measures)}\n')
+        f.write(f'{format_data_fields(format=True)}')
         sleep(1)
