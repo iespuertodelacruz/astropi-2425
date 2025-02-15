@@ -22,7 +22,7 @@ Members:
 DEBUG = True
 
 # ==============================================================================
-from time import sleep, strftime
+from time import monotonic_ns, sleep, strftime
 
 # ==============================================================================
 if DEBUG:
@@ -33,12 +33,16 @@ else:
     from .utils import get_ISS_position
 
 # ==============================================================================
-# VARIABLES
-out_path = 'iss.csv'
-boo_true = True
-sense = SenseHat()
+OUT_PATH = 'iss.csv'
+HOURS_RUNNIG = 3
+HOUR2MIN = 60
+MIN2SEC = 60
+SEC2NANOSEC = 1_000_000_000
 
-counter = 0
+
+sense = SenseHat()
+initial_time = monotonic_ns()
+duration = HOURS_RUNNIG * HOUR2MIN * MIN2SEC * SEC2NANOSEC
 
 # HEADER
 HEADER = [
@@ -61,25 +65,40 @@ HEADER = [
 ]
 
 # FILE CODE
-with open(out_path, 'w') as f:
+with open(OUT_PATH, 'w') as f:
     f.write(f'{",".join(HEADER)}\n')
 
-    while counter < 10:
+    while (monotonic_ns() - initial_time) < (duration - SEC2NANOSEC):
         # VARIABLES
 
         # NON XYZ
-        time = strftime('%d-%b-%Y %H:%M:%S')
+        time = strftime('%x %X')
         latitude, longitude, altitude = get_ISS_position().values()
         temperature = sense.get_temperature()
         pressure = sense.get_pressure()
         humidity = sense.get_humidity()
 
         # XYZ
-        acceleration_x, acceleration_y, acceleration_z = sense.get_accelerometer_raw().values()
-        magnetic_x, magnetic_y, magnetic_z = sense.get_compass_raw().values()
-        rotation_x, rotation_y, rotation_z = sense.get_gyroscope_raw().values()
-        counter += 1
+        # MAGNETIC FIELD
+        sense.set_imu_config(compass_enabled=True, gyro_enabled=False, accel_enabled=False)
+        magnetic = sense.get_compass_raw()
+        mx = magnetic['x']
+        my = magnetic['y']
+        mz = magnetic['z']
+        # ACCELERATION
+        sense.set_imu_config(compass_enabled=False, gyro_enabled=False, accel_enabled=True)
+        acceleration = sense.get_accelerometer_raw()
+        ax = acceleration['x']
+        ay = acceleration['y']
+        az = acceleration['z']
+        # ROTATION
+        sense.set_imu_config(compass_enabled=False, gyro_enabled=True, accel_enabled=False)
+        rotation = sense.get_gyroscope_raw()
+        rx = rotation['x']
+        ry = rotation['y']
+        rz = rotation['z']
 
+        # MEASURES
         measures = [
             f'{time}',
             f'{latitude}',
@@ -88,21 +107,16 @@ with open(out_path, 'w') as f:
             f'{temperature}',
             f'{humidity}',
             f'{pressure}',
-            f'{magnetic_x}',
-            f'{magnetic_y}',
-            f'{magnetic_z}',
-            f'{acceleration_x}',
-            f'{acceleration_y}',
-            f'{acceleration_z}',
-            f'{rotation_x}',
-            f'{rotation_y}',
-            f'{rotation_z}',
+            f'{mx}',
+            f'{my}',
+            f'{mz}',
+            f'{ax}',
+            f'{ay}',
+            f'{az}',
+            f'{rx}',
+            f'{ry}',
+            f'{rz}',
         ]
 
         f.write(f'{",".join(measures)}\n')
-        sleep(1)
-
-with open(out_path) as lines:
-    for line in lines:
-        print(line)
         sleep(1)
