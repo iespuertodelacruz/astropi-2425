@@ -22,7 +22,8 @@ Members:
 DEBUG = True
 
 # ==============================================================================
-from time import monotonic_ns, sleep, strftime
+from datetime import datetime, timedelta
+from time import sleep, strftime
 
 # ==============================================================================
 if DEBUG:
@@ -34,15 +35,10 @@ else:
 
 # ==============================================================================
 OUT_PATH = 'iss.csv'
-HOURS_RUNNIG = 3
-HOUR2MIN = 60
-MIN2SEC = 60
-SEC2NANOSEC = 1_000_000_000
-
 
 sense = SenseHat()
-initial_time = monotonic_ns()
-duration = HOURS_RUNNIG * HOUR2MIN * MIN2SEC * SEC2NANOSEC
+start_time = datetime.now()
+end_time = start_time + timedelta(hours=2, minutes=59, seconds=55)
 
 
 # HEADER AND MEASURES VARIABLES
@@ -79,9 +75,9 @@ def format_data_fields(*, format: bool) -> str:
 
 # FILE CODE
 with open(OUT_PATH, 'w') as f:
-    f.write(f'{format_data_fields(format=False)}')
+    f.write(format_data_fields(format=False))
 
-    while (monotonic_ns() - initial_time) < (duration - SEC2NANOSEC):
+    while start_time < end_time:
         # VARIABLES
 
         # NON XYZ
@@ -111,5 +107,5 @@ with open(OUT_PATH, 'w') as f:
         ry = rotation['y']
         rz = rotation['z']
 
-        f.write(f'{format_data_fields(format=True)}')
-        sleep(1)
+        f.write(format_data_fields(format=True))
+        sleep(5)
