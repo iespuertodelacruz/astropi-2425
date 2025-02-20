@@ -36,13 +36,13 @@ else:
 # ==============================================================================
 OUT_PATH = 'iss.csv'
 HOURS_RUNNING = 2
-MUNUTES_RUNNIG = 59
+MINUTES_RUNNIG = 59
 SECONDS_RUNNING = 50
 
 sense = SenseHat()
 start_time = datetime.now()
 end_time = start_time + timedelta(
-    hours=HOURS_RUNNING, minutes=MUNUTES_RUNNIG, seconds=SECONDS_RUNNING
+    hours=HOURS_RUNNING, minutes=MINUTES_RUNNIG, seconds=SECONDS_RUNNING
 )
 
 
@@ -134,4 +134,5 @@ with open(OUT_PATH, 'w') as f:
         rz = rotation['z']
 
         f.write(format_data_fields(format=True))
+        f.flush()
         sleep(5)
