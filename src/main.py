@@ -35,10 +35,15 @@ else:
 
 # ==============================================================================
 OUT_PATH = 'iss.csv'
+HOURS_RUNNING = 2
+MUNUTES_RUNNIG = 59
+SECONDS_RUNNING = 50
 
 sense = SenseHat()
 start_time = datetime.now()
-end_time = start_time + timedelta(hours=2, minutes=59, seconds=55)
+end_time = start_time + timedelta(
+    hours=HOURS_RUNNING, minutes=MUNUTES_RUNNIG, seconds=SECONDS_RUNNING
+)
 
 
 # HEADER AND MEASURES VARIABLES
@@ -52,25 +57,45 @@ def format_data_fields(*, format: bool) -> str:
     :return: text separated by commas or variables
     :rtype: str
     """
+    if not format:
+        header = [
+            'date_time_utc',
+            'longitude',
+            'altitude',
+            'temperature',
+            'humidity',
+            'pressure',
+            'magnetic_field_x',
+            'magnetic_field_y',
+            'magnetic_field_z',
+            'acceleration_x',
+            'acceleration_y',
+            'acceleration_z',
+            'rotation_x',
+            'rotation_y',
+            'rotation_z',
+        ]
+        return ','.join(header) + '\n'
+    else:
+        variables = [
+            f'{time}',
+            f'{longitude}',
+            f'{altitude}',
+            f'{temperature}',
+            f'{humidity}',
+            f'{pressure}',
+            f'{mx}',
+            f'{my}',
+            f'{mz}',
+            f'{ax}',
+            f'{ay}',
+            f'{az}',
+            f'{rx}',
+            f'{ry}',
+            f'{rz}',
+        ]
 
-    measures = [
-        f'{time}' if format else 'date_time_utc',
-        f'{longitude}' if format else 'longitude',
-        f'{altitude}' if format else 'altitude',
-        f'{temperature}' if format else 'temperature',
-        f'{humidity}' if format else 'humidity',
-        f'{pressure}' if format else 'pressure',
-        f'{mx}' if format else 'magnetic_field_x',
-        f'{my}' if format else 'magnetic_field_y',
-        f'{mz}' if format else 'magnetic_field_z',
-        f'{ax}' if format else 'acceleration_x',
-        f'{ay}' if format else 'acceleration_y',
-        f'{az}' if format else 'acceleration_z',
-        f'{rx}' if format else 'rotation_x',
-        f'{ry}' if format else 'rotation_y',
-        f'{rz}' if format else 'rotation_z',
-    ]
-    return f'{",".join(measures)}\n'
+        return ','.join(variables) + '\n'
 
 
 # FILE CODE
@@ -79,6 +104,7 @@ with open(OUT_PATH, 'w') as f:
 
     while start_time < end_time:
         # VARIABLES
+        start_time = datetime.now()
 
         # NON XYZ
         time = strftime('%x %X')
