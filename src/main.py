@@ -23,7 +23,7 @@ DEBUG = True
 
 # ==============================================================================
 from datetime import datetime, timedelta
-from time import sleep, strftime
+from time import sleep
 
 # ==============================================================================
 if DEBUG:
@@ -34,19 +34,13 @@ else:
     from .utils import get_ISS_position
 
 # ==============================================================================
+sense = SenseHat()
+
 OUT_PATH = 'iss.csv'
 HOURS_RUNNING = 2
 MINUTES_RUNNIG = 59
-SECONDS_RUNNING = 50
-
-sense = SenseHat()
-start_time = datetime.now()
-end_time = start_time + timedelta(
-    hours=HOURS_RUNNING, minutes=MINUTES_RUNNIG, seconds=SECONDS_RUNNING
-)
 
 
-# HEADER AND MEASURES VARIABLES
 def format_data_fields(*, format: bool) -> str:
     """
     Choose True or False to select the format (header or variables).
@@ -60,14 +54,15 @@ def format_data_fields(*, format: bool) -> str:
     if not format:
         header = [
             'date_time_utc',
+            'latitude',
             'longitude',
             'altitude',
             'temperature',
             'humidity',
             'pressure',
-            'magnetic_field_x',
-            'magnetic_field_y',
-            'magnetic_field_z',
+            'magnetic_x',
+            'magnetic_y',
+            'magnetic_z',
             'acceleration_x',
             'acceleration_y',
             'acceleration_z',
@@ -78,60 +73,43 @@ def format_data_fields(*, format: bool) -> str:
         return ','.join(header) + '\n'
     else:
         variables = [
-            f'{time}',
-            f'{longitude}',
-            f'{altitude}',
+            f'{timestamp}',
+            f'{position["latitude"]}',
+            f'{position["longitude"]}',
+            f'{position["altitude"]}',
             f'{temperature}',
             f'{humidity}',
             f'{pressure}',
-            f'{mx}',
-            f'{my}',
-            f'{mz}',
-            f'{ax}',
-            f'{ay}',
-            f'{az}',
-            f'{rx}',
-            f'{ry}',
-            f'{rz}',
+            f'{magnetic["x"]}',
+            f'{magnetic["y"]}',
+            f'{magnetic["z"]}',
+            f'{acceleration["x"]}',
+            f'{acceleration["y"]}',
+            f'{acceleration["z"]}',
+            f'{rotation["x"]}',
+            f'{rotation["y"]}',
+            f'{rotation["z"]}',
         ]
-
         return ','.join(variables) + '\n'
 
 
-# FILE CODE
 with open(OUT_PATH, 'w') as f:
     f.write(format_data_fields(format=False))
+    start_time = datetime.now()
+    end_time = start_time + timedelta(minutes=MINUTES_RUNNIG)
 
-    while start_time < end_time:
-        # VARIABLES
-        start_time = datetime.now()
-
-        # NON XYZ
-        time = strftime('%x %X')
-        latitude, longitude, altitude = get_ISS_position().values()
+    while datetime.now() < end_time:
+        timestamp = datetime.now().isoformat()
+        position = get_ISS_position()
         temperature = sense.get_temperature()
-        pressure = sense.get_pressure()
         humidity = sense.get_humidity()
-
-        # XYZ
-        # MAGNETIC FIELD
+        pressure = sense.get_pressure()
         sense.set_imu_config(compass_enabled=True, gyro_enabled=False, accel_enabled=False)
         magnetic = sense.get_compass_raw()
-        mx = magnetic['x']
-        my = magnetic['y']
-        mz = magnetic['z']
-        # ACCELERATION
-        sense.set_imu_config(compass_enabled=False, gyro_enabled=False, accel_enabled=True)
-        acceleration = sense.get_accelerometer_raw()
-        ax = acceleration['x']
-        ay = acceleration['y']
-        az = acceleration['z']
-        # ROTATION
         sense.set_imu_config(compass_enabled=False, gyro_enabled=True, accel_enabled=False)
         rotation = sense.get_gyroscope_raw()
-        rx = rotation['x']
-        ry = rotation['y']
-        rz = rotation['z']
+        sense.set_imu_config(compass_enabled=False, gyro_enabled=False, accel_enabled=True)
+        acceleration = sense.get_accelerometer_raw()
 
         f.write(format_data_fields(format=True))
         f.flush()
