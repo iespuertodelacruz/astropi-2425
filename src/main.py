@@ -40,7 +40,7 @@ HEADER = ['timestamp', 'latitude', 'longitude', 'altitude', 'temperature', 'humi
 with open('iss.csv', 'w') as f:
     f.write(f'{",".join(HEADER)}\n')
     start_time = datetime.now()
-    end_time = start_time + timedelta(hours=3)
+    end_time = start_time + timedelta(hours=2, minutes=59)
     
     while start_time < end_time:
         timestamp = datetime.now().isoformat()
