@@ -1,8 +1,3 @@
-# /// script
-# dependencies = [
-# ]
-# ///
-
 # ==============================================================================
 # Astro Pi Challenge Mission Space Lab 2024/25
 # ==============================================================================
@@ -16,29 +11,35 @@ Members:
     - Carla
     - Daniele
     - Aarón
-
+Email contact: 38003999@gobiernodecanarias.org
 """
 
-DEBUG = True
-
-# ==============================================================================
 from datetime import datetime, timedelta
 from time import sleep
 
-# ==============================================================================
-if DEBUG:
-    from fake_sensors import SenseHat, get_ISS_position
-else:
-    from sense_hat import SenseHat  # type: ignore
-
-    from .utils import get_ISS_position
+from orbit import ISS
+from sense_hat import SenseHat
+from skyfield.api import load
 
 # ==============================================================================
-sense = SenseHat()
-
-OUT_PATH = 'iss.csv'
+OUT_PATH = 'iss_matraka.csv'
 HOURS_RUNNING = 2
 MINUTES_RUNNIG = 59
+
+
+# ==============================================================================
+def get_ISS_position() -> dict:
+    """
+    Returns the ISS latitude and longitude (degrees) and altitude (km).
+    """
+    position = ISS.at(load.timescale().now())
+    location = position.subpoint()
+
+    lat = location.latitude.degrees
+    lon = location.longitude.degrees
+    alt = location.elevation.km
+
+    return {'latitude': lat, 'longitude': lon, 'altitude': alt}
 
 
 def format_data_fields(*, format: bool) -> str:
@@ -92,6 +93,8 @@ def format_data_fields(*, format: bool) -> str:
         ]
         return ','.join(variables) + '\n'
 
+
+sense = SenseHat()
 
 with open(OUT_PATH, 'w') as f:
     f.write(format_data_fields(format=False))
