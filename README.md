@@ -25,6 +25,8 @@ El equipo se llama **Matraka** y está compuesto por **Carla, Daniele y Aarón**
 - [Primeros pasos con Sense HAT](https://projects.raspberrypi.org/en/projects/getting-started-with-the-sense-hat/0)
 - [Sensores AstroPi](https://astro-pi.org/about/the-sensors)
 - [Simulador de Python + Sense HAT](https://trinket.io/sense-hat)
+- [Requisitos del programa](https://astro-pi.org/mission-space-lab/rulebook)
+- [Ayuda sobre cómo probar tu programa](https://projects.raspberrypi.org/en/projects/mission-space-lab-creator-guide/5)
 - [Prueba tu programa en la ISS](https://missions.astro-pi.org/msl/replay-tool)
 
 ## Paquetes necesarios
