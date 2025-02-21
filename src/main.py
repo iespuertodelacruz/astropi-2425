@@ -4,9 +4,7 @@
 
 """
 This is the main module of the project. It is the entry point of the program.
-Team: Matraka, from IES Puerto de la Cruz - Telesforo Bravo
-      Tenerife
-      SPAIN
+Team: Matraka, from IES Puerto de la Cruz - Telesforo Bravo (Tenerife, SPAN)
 Members:
     - Carla
     - Daniele
@@ -17,29 +15,17 @@ Email contact: 38003999@gobiernodecanarias.org
 from datetime import datetime, timedelta
 from time import sleep
 
-from orbit import ISS
 from sense_hat import SenseHat
-from skyfield.api import load
+
+from .utils import get_ISS_position  # calculate_speed
 
 # ==============================================================================
 OUT_PATH = 'iss_matraka.csv'
-HOURS_RUNNING = 2
-MINUTES_RUNNING = 59
+RESULT_PATH = 'result.txt'  # Calculate ISS speed in Km/s with 4 decimals
+MINUTES_RUNNING = 10
 
 
 # ==============================================================================
-def get_ISS_position() -> dict:
-    """
-    Returns the ISS latitude and longitude (degrees) and altitude (km).
-    """
-    position = ISS.at(load.timescale().now())
-    location = position.subpoint()
-
-    lat = location.latitude.degrees
-    lon = location.longitude.degrees
-    alt = location.elevation.km
-
-    return {'latitude': lat, 'longitude': lon, 'altitude': alt}
 
 
 def format_data_fields(*, format: bool) -> str:
@@ -57,7 +43,6 @@ def format_data_fields(*, format: bool) -> str:
             'date_time_utc',
             'latitude',
             'longitude',
-            'altitude',
             'temperature',
             'humidity',
             'pressure',
@@ -77,7 +62,6 @@ def format_data_fields(*, format: bool) -> str:
             f'{timestamp}',
             f'{position["latitude"]}',
             f'{position["longitude"]}',
-            f'{position["altitude"]}',
             f'{temperature}',
             f'{humidity}',
             f'{pressure}',
@@ -99,7 +83,7 @@ sense = SenseHat()
 with open(OUT_PATH, 'w') as f:
     f.write(format_data_fields(format=False))
     start_time = datetime.now()
-    end_time = start_time + timedelta(hours=HOURS_RUNNING, minutes=MINUTES_RUNNING)
+    end_time = start_time + timedelta(minutes=MINUTES_RUNNING)
 
     while datetime.now() < end_time:
         timestamp = datetime.now().isoformat()
