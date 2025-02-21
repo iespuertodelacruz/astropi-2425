@@ -24,7 +24,7 @@ from skyfield.api import load
 # ==============================================================================
 OUT_PATH = 'iss_matraka.csv'
 HOURS_RUNNING = 2
-MINUTES_RUNNIG = 59
+MINUTES_RUNNING = 59
 
 
 # ==============================================================================
@@ -99,7 +99,7 @@ sense = SenseHat()
 with open(OUT_PATH, 'w') as f:
     f.write(format_data_fields(format=False))
     start_time = datetime.now()
-    end_time = start_time + timedelta(minutes=MINUTES_RUNNIG)
+    end_time = start_time + timedelta(hours=HOURS_RUNNING, minutes=MINUTES_RUNNING)
 
     while datetime.now() < end_time:
         timestamp = datetime.now().isoformat()
