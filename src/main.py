@@ -47,7 +47,6 @@ HEADER = [
 sense = SenseHat()
 # ==============================================================================
 
-
 with open(OUT_PATH, 'w') as f, open(SPEED_LOG_PATH, 'w') as speed_log:
     f.write(','.join(HEADER) + '\n')
     speed_log.write('date_time_utc,speed_km_s\n')
@@ -105,7 +104,7 @@ with open(OUT_PATH, 'w') as f, open(SPEED_LOG_PATH, 'w') as speed_log:
             prev_position = position
             prev_time = datetime.now()
 
-    # Average Speed ​​and Save Average Speed
+    # Average Speed and Save Average Speed
     avg_speed = sum(total_speed) / len(total_speed)
     rounded_avg_speed = round(avg_speed, ROUNDING_DECIMALS)
     with open(RESULT_PATH, 'w') as result_file:

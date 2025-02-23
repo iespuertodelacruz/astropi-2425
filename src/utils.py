@@ -34,10 +34,10 @@ def calculate_speed(
 
 def get_ISS_position() -> dict:
     """
-    Devuelve la latitud y longitud actuales de la ISS.
+    Returns the current ISS latitude and longitude (degrees).
     """
     iss = ISS()
     point = iss.coordinates()
-    lat = point.latitude.degrees
-    lon = point.longitude.degrees
+    lat = point.latitude.signed_dms()
+    lon = point.longitude.signed_dms()
     return {'latitude': lat, 'longitude': lon}
