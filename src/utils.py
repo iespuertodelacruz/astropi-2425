@@ -1,7 +1,5 @@
 from math import atan2, cos, radians, sin, sqrt
-
 from astro_pi_orbit import ISS
-
 
 def calculate_distance(point1: tuple[float, float], point2: tuple[float, float]) -> float:
     """
@@ -21,7 +19,6 @@ def calculate_distance(point1: tuple[float, float], point2: tuple[float, float])
 
     return EARTH_RADIUS * c  # Distance in kilometers
 
-
 def calculate_speed(
     point1: tuple[float, float], point2: tuple[float, float], time_interval: float
 ) -> float:
@@ -31,13 +28,12 @@ def calculate_speed(
     distance = calculate_distance(point1, point2)  # Distance in kilometers
     return distance / time_interval  # Speed in km/s
 
-
 def get_ISS_position() -> dict:
     """
-    Returns the current ISS latitude and longitude (degrees).
+    Devuelve la latitud y longitud actuales de la ISS.
     """
     iss = ISS()
     point = iss.coordinates()
-    lat = point.latitude.signed_dms()
-    lon = point.longitude.signed_dms()
+    lat = point.latitude.degrees
+    lon = point.longitude.degrees
     return {'latitude': lat, 'longitude': lon}
