@@ -12,21 +12,29 @@ Members:
 Email contact: 38003999@gobiernodecanarias.org
 """
 
+# ==============================================================================
+# IMPORTS
+# ==============================================================================
+
+# Import the necessary modules
 from datetime import datetime, timedelta
 
+# Import the Sense HAT library
 from sense_hat import SenseHat
 
+# Import the necessary functions from the utils module
 from utils import calculate_speed, get_ISS_position
 
 # ==============================================================================
+# CONSTANTS AND CONFIGURATIONS
+# ==============================================================================
 
-OUT_PATH = 'iss_matraka.csv'
-SPEED_LOG_PATH = 'speed_log.csv'
-RESULT_PATH = 'result.txt'
-DURATION_MINUTES = 9
-INTERVAL = 10
-ROUNDING_DECIMALS = 4
-HEADER = [
+OUT_PATH = 'iss_matraka.csv'  # Output file path
+RESULT_PATH = 'result.txt'  # Result file path
+DURATION_SECONDS = 9 * 60 + 30  # Duration of the experiment in seconds
+INTERVAL = 5  # Interval in seconds for saving data
+ROUNDING_DECIMALS = 4  # Number of decimal places to round the speed
+HEADER = [  # CSV header
     'date_time_utc',
     'latitude',
     'longitude',
@@ -42,31 +50,38 @@ HEADER = [
     'rotation_x',
     'rotation_y',
     'rotation_z',
+    'speed',
 ]
 
-sense = SenseHat()
+# ==============================================================================
+# MAIN PROGRAM
 # ==============================================================================
 
-with open(OUT_PATH, 'w') as f, open(SPEED_LOG_PATH, 'w') as speed_log:
-    f.write(','.join(HEADER) + '\n')
-    speed_log.write('date_time_utc,speed_km_s\n')
+sense = SenseHat()  # Sense HAT object
 
+# Open the output file and the speed log file
+with open(OUT_PATH, 'w') as f:
+    # Write headers
+    f.write(','.join(HEADER) + '\n')
+
+    # Start and end time of the experiment
     start_time = datetime.now()
-    end_time = start_time + timedelta(minutes=DURATION_MINUTES)
+    end_time = start_time + timedelta(seconds=DURATION_SECONDS)
 
     prev_position = None
     prev_time = None
     total_speed = []
 
+    # Main loop
     while datetime.now() < end_time:
         timestamp = datetime.now().isoformat()
         position = get_ISS_position()
 
-        # 10 Second Interval for Saving Data
+        # Sampling interval
         if prev_position is not None and prev_time is not None:
             time_diff = (datetime.now() - prev_time).total_seconds()
             if time_diff >= INTERVAL:
-                # Speeds and Save Speeds
+                # Calculate ISS Speed
                 speed = calculate_speed(
                     (prev_position['latitude'], prev_position['longitude']),
                     (position['latitude'], position['longitude']),
@@ -74,38 +89,39 @@ with open(OUT_PATH, 'w') as f, open(SPEED_LOG_PATH, 'w') as speed_log:
                 )
                 total_speed.append(speed)
 
-                rounded_speed = round(speed, ROUNDING_DECIMALS)
-                speed_log.write(f'{timestamp},{rounded_speed}\n')
-                speed_log.flush()
-
-                # Other Measurements and Save Measurements
-                temperature = sense.get_temperature()
-                humidity = sense.get_humidity()
-                pressure = sense.get_pressure()
+                # Get sensor data
+                temperature = sense.get_temperature()  # Temperature in Celsius
+                humidity = sense.get_humidity()  # Humidity in percentage
+                pressure = sense.get_pressure()  # Pressure in millibars
                 sense.set_imu_config(compass_enabled=True, gyro_enabled=False, accel_enabled=False)
-                magnetic = sense.get_compass_raw()
+                magnetic = sense.get_compass_raw()  # Magnetic field in microteslas
                 sense.set_imu_config(compass_enabled=False, gyro_enabled=True, accel_enabled=False)
-                rotation = sense.get_gyroscope_raw()
+                rotation = sense.get_gyroscope_raw()  # Rotation in radians per second
                 sense.set_imu_config(compass_enabled=False, gyro_enabled=False, accel_enabled=True)
-                acceleration = sense.get_accelerometer_raw()
+                acceleration = sense.get_accelerometer_raw()  # Acceleration in Gs
 
+                # Save data to the output file
                 f.write(
                     f'{timestamp},{position["latitude"]},{position["longitude"]},{temperature},'
                     f'{humidity},{pressure},{magnetic["x"]},{magnetic["y"]},{magnetic["z"]},'
                     f'{acceleration["x"]},{acceleration["y"]},{acceleration["z"]},'
-                    f'{rotation["x"]},{rotation["y"]},{rotation["z"]},{rounded_speed}\n'
+                    f'{rotation["x"]},{rotation["y"]},{rotation["z"]},{speed}\n'
                 )
                 f.flush()
 
+                # Update the previous position and time
                 prev_position = position
                 prev_time = datetime.now()
 
         else:
+            # Update the previous position and time
             prev_position = position
             prev_time = datetime.now()
 
     # Average Speed and Save Average Speed
     avg_speed = sum(total_speed) / len(total_speed)
     rounded_avg_speed = round(avg_speed, ROUNDING_DECIMALS)
+
+    # Save the average speed in the result file
     with open(RESULT_PATH, 'w') as result_file:
         result_file.write(f'{rounded_avg_speed}')

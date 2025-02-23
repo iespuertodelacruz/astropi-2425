@@ -3,4 +3,4 @@
     uv run main.py
 
 zip:
-    zip astropi-matraka.zip src/*.py
+    rm -f astropi-matraka.zip && zip astropi-matraka.zip src/*.py
