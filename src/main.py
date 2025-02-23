@@ -1,3 +1,17 @@
+# ==============================================================================
+# Astro Pi Challenge Mission Space Lab 2024/25
+# ==============================================================================
+
+"""
+This is the main module of the project. It is the entry point of the program.
+Team: Matraka, from IES Puerto de la Cruz - Telesforo Bravo (Tenerife, SPAN)
+Members:
+    - Carla
+    - Daniele
+    - Aarón
+Email contact: 38003999@gobiernodecanarias.org
+"""
+
 from datetime import datetime, timedelta
 
 from sense_hat import SenseHat
@@ -92,6 +106,7 @@ with open(OUT_PATH, 'w') as f, open(SPEED_LOG_PATH, 'w') as speed_log:
             prev_time = datetime.now()
 
     # Average Speed ​​and Save Average Speed
-    avg_speed = round(sum(total_speed) / len(total_speed), ROUNDING_DECIMALS)
+    avg_speed = sum(total_speed) / len(total_speed)
+    rounded_avg_speed = round(avg_speed, ROUNDING_DECIMALS)
     with open(RESULT_PATH, 'w') as result_file:
-        result_file.write(f'{avg_speed}')
+        result_file.write(f'{rounded_avg_speed}')
