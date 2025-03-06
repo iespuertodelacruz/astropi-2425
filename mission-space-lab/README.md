@@ -1,4 +1,4 @@
-# astropi-matraka
+# Mission Space Lab
 
 Participación del [IES Puerto de la Cruz - Telesforo Bravo](https://www3.gobiernodecanarias.org/medusa/edublog/iespuertodelacruztelesforobravo/) en el desafío [Astro Pi Mission Space Lab](https://astro-pi.org/mission-space-lab).
 
